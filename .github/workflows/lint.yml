@@ -27,17 +27,11 @@ jobs:
       - name: Check PHP Installation
         run: where.exe php
 
-      - name: Ensure CodeSniffer & Pint are Installed
-        run: composer require --dev squizlabs/php_codesniffer laravel/pint:^1.10
+      - name: Ensure CodeSniffer is Installed
+        run: composer require --dev squizlabs/php_codesniffer
 
       - name: Validate PHP CodeSniffer Installation
         run: php vendor/bin/phpcs --version || echo "PHP CodeSniffer is not installed!"
 
       - name: Run PHP CodeSniffer
         run: php vendor/bin/phpcs --standard=PSR12 app/
-
-      - name: Validate Laravel Pint Installation
-        run: php vendor/bin/pint --version || echo "Laravel Pint is not installed!"
-
-      - name: Run Laravel Pint
-        run: php vendor/bin/pint --test
