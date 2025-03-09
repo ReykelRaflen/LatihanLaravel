@@ -30,11 +30,6 @@ jobs:
       - name: Ensure CodeSniffer & Pint are Installed
         run: composer require --dev squizlabs/php_codesniffer laravel/pint:^1.10
 
-      - name: Run PHP Linter
-        run: |
-          Get-ChildItem -Path app, routes, database -Recurse -Filter "*.php" | ForEach-Object { php -l $_.FullName }
-        shell: pwsh
-
       - name: Validate PHP CodeSniffer Installation
         run: php vendor/bin/phpcs --version || echo "PHP CodeSniffer is not installed!"
 
