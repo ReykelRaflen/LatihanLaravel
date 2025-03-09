@@ -23,7 +23,7 @@ class DashboardController extends Controller
         $historiKunjunganQuery = HistoriKunjungan::with(['kunjunganPetugas.jadwalKunjungan']);
 
         // Cek role user untuk menentukan histori kunjungan
-        if (! in_array($user->role, ['superadmin', 'admin'])) {
+        if (!in_array($user->role, ['superadmin', 'admin'])) {
             $historiKunjunganQuery->whereHas('kunjunganPetugas.jadwalKunjungan', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             });
@@ -57,7 +57,7 @@ class DashboardController extends Controller
         $historiKunjunganQuery = HistoriKunjungan::with(['kunjunganPetugas.jadwalKunjungan']);
 
         // Cek role user untuk menentukan histori kunjungan
-        if (! in_array($user->role, ['superadmin', 'admin'])) {
+        if (!in_array($user->role, ['superadmin', 'admin'])) {
             $historiKunjunganQuery->whereHas('kunjunganPetugas.jadwalKunjungan', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             });

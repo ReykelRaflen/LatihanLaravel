@@ -4,86 +4,77 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
+    /**
+     * Tampilkan daftar pengguna berdasarkan peran.
+     */
     public function index()
     {
-        $loggedInUser = auth()->user(); // Mendapatkan informasi pengguna yang sedang masuk
+        $loggedInUser = auth()->user();
 
-        if ($loggedInUser->role === 'admin') {
-            $users = User::whereIn('role', ['sekolah', 'dinas_pendidikan'])->get();
-        } elseif ($loggedInUser->role === 'superadmin') {
-            $users = User::all();
-            // Kosongkan jika peran pengguna bukan admin
-        } else {
-            $users = collect();
-        }
+        $users = match ($loggedInUser->role) {
+            'admin' => User::whereIn('role', ['sekolah', 'dinas_pendidikan'])->select('id', 'name', 'role')->get(),
+            'superadmin' => User::select('id', 'name', 'role')->get(),
+            default => collect(),
+        };
 
-        return view(
-            'dashboard.manajemen-pengguna.pengguna.index',
-            [
-                'user' => $users,
-            ]
-        );
+        return view('dashboard.manajemen-pengguna.pengguna.index', compact('users'));
     }
 
+    /**
+     * Tampilkan form tambah pengguna.
+     */
     public function create()
     {
         return view('dashboard.manajemen-pengguna.pengguna.create');
     }
 
+    /**
+     * Simpan pengguna ke dalam basis data.
+     */
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'username' => 'required|unique:users,username',
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:50|unique:users,username',
             'email' => 'nullable|email|unique:users,email',
-            'role' => 'required',
+            'role' => 'required|in:admin,superadmin,sekolah,dinas_pendidikan',
             'password' => 'required|min:6',
-            // Tambahkan validasi untuk atribut lainnya sesuai kebutuhan
-        ], [
-            'username.unique' => 'Username sudah digunakan. Silakan gunakan username lain.',
-            'email.unique' => 'Email sudah digunakan. Silakan gunakan email lain.',
-            'password.min' => 'Password harus memiliki setidaknya 6 karakter.',
-            // Tambahkan pesan error lain sesuai kebutuhan
         ]);
 
-        // Simpan data pengguna ke dalam basis data
         User::create([
             'name' => $request->name,
             'username' => $request->username,
             'email' => $request->email,
             'role' => $request->role,
             'password' => bcrypt($request->password),
-            // Simpan atribut lainnya sesuai kebutuhan
         ]);
 
-        return redirect('/dashboard-pengguna')->with('success', 'Pengguna berhasil ditambahkan!');
+        return redirect()->route('dashboard-pengguna')->with('success', 'Pengguna berhasil ditambahkan!');
     }
 
-    public function edit($id)
+    /**
+     * Tampilkan form edit pengguna.
+     */
+    public function edit(User $user)
     {
-        $users = User::findOrFail($id);
-
-        return view('dashboard.manajemen-pengguna.pengguna.edit', [
-            'user' => $users,
-        ]);
+        return view('dashboard.manajemen-pengguna.pengguna.edit', compact('user'));
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Perbarui data pengguna.
+     */
+    public function update(Request $request, User $user)
     {
-        $user = User::findOrFail($id);
         $request->validate([
-            'name' => 'required',
-            'username' => 'required|unique:users,username,'.$id,
-            'email' => 'nullable|email|unique:users,email,'.$id,
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:50|unique:users,username,' . $user->id,
+            'email' => 'nullable|email|unique:users,email,' . $user->id,
             'password' => 'nullable|min:6',
-        ], [
-            'username.unique' => 'Username sudah digunakan. Silakan gunakan username lain.',
-            'email.unique' => 'Email sudah digunakan. Silakan gunakan email lain.',
-            'password.min' => 'Password harus memiliki setidaknya 6 karakter.',
         ]);
 
         $user->update([
@@ -93,40 +84,29 @@ class UserController extends Controller
         ]);
 
         if ($request->filled('password')) {
-            $user->password = bcrypt($request->password);
-            $user->save();
+            $user->update(['password' => bcrypt($request->password)]);
         }
 
-        // Perbarui atribut lainnya jika diperlukan
-        return redirect('/dashboard-pengguna')->with('success', 'Pengguna berhasil diperbarui!');
+        return redirect()->route('dashboard-pengguna')->with('success', 'Pengguna berhasil diperbarui!');
     }
 
-    public function destroy($id)
+    /**
+     * Hapus pengguna.
+     */
+    public function destroy(User $user)
     {
-        $users = User::findOrFail($id);
+        $user->delete();
 
-        $users->delete();
-
-        return redirect('/dashboard-pengguna')->with('delete', 'Pengguna berhasil dihapus.');
+        return redirect()->route('dashboard-pengguna')->with('delete', 'Pengguna berhasil dihapus.');
     }
 
-    public function printUser($id)
+    /**
+     * Cetak informasi pengguna (hanya untuk admin yang mencetak data sekolah).
+     */
+    public function printUser(User $user)
     {
-        $user = User::find($id);
+        Gate::authorize('print-user', $user);
 
-        // Pastikan hanya admin yang dapat mencetak informasi login
-        if (auth()->user()->role == 'admin' && $user->role == 'sekolah') {
-            // Generate password acak (misalnya, 8 karakter)
-            // $randomPassword = Str::random(8);
-
-            // Tampilkan view cetak dengan informasi login
-            return view('dashboard.manajemen-pengguna.pengguna.print')->with([
-                'username' => $user->username,
-                // 'password' => $user->password,
-            ]);
-        } else {
-            // Tampilkan pesan kesalahan jika admin tidak memiliki izin untuk mencetak
-            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk mencetak informasi ini.');
-        }
+        return view('dashboard.manajemen-pengguna.pengguna.print', compact('user'));
     }
 }

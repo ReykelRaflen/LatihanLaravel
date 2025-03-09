@@ -26,10 +26,7 @@ class JadwalKunjunganController extends Controller
             ->latest()
             ->get();
 
-        return view(
-            'dashboard.manajemen-kegiatan.jadwal-kunjungan.index',
-            compact('jadwalKunjungan', 'kunjunganPetugas')
-        );
+        return view('dashboard.manajemen-kegiatan.jadwal-kunjungan.index', compact('jadwalKunjungan', 'kunjunganPetugas'));
     }
 
     /**
@@ -37,7 +34,7 @@ class JadwalKunjunganController extends Controller
      */
     public function create(): View
     {
-        $sekolahUsers = User::where('role', 'sekolah')->get();
+        $sekolahUsers = User::select('id', 'name')->where('role', 'sekolah')->get();
 
         return view('dashboard.manajemen-kegiatan.jadwal-kunjungan.create', compact('sekolahUsers'));
     }
@@ -58,9 +55,7 @@ class JadwalKunjunganController extends Controller
 
         JadwalKunjungan::create($validatedData);
 
-        return redirect()
-            ->route('dashboard-jadwal-kunjungan')
-            ->with('success', 'Jadwal berhasil ditambahkan.');
+        return redirect()->route('dashboard-jadwal-kunjungan')->with('success', 'Jadwal berhasil ditambahkan.');
     }
 
     /**
@@ -68,7 +63,7 @@ class JadwalKunjunganController extends Controller
      */
     public function edit(JadwalKunjungan $jadwalKunjungan): View
     {
-        $this->authorize('update', $jadwalKunjungan);
+        abort_if(auth()->user()->cannot('update', $jadwalKunjungan), 403);
 
         return view('dashboard.manajemen-kegiatan.jadwal-kunjungan.edit', compact('jadwalKunjungan'));
     }
@@ -78,7 +73,7 @@ class JadwalKunjunganController extends Controller
      */
     public function update(JadwalKunjunganRequest $request, JadwalKunjungan $jadwalKunjungan): RedirectResponse
     {
-        $this->authorize('update', $jadwalKunjungan);
+        abort_if(auth()->user()->cannot('update', $jadwalKunjungan), 403);
 
         $validatedData = $request->validated();
 
@@ -91,9 +86,7 @@ class JadwalKunjunganController extends Controller
 
         $jadwalKunjungan->update($validatedData);
 
-        return redirect()
-            ->route('dashboard-jadwal-kunjungan')
-            ->with('success', 'Jadwal berhasil diperbarui.');
+        return redirect()->route('dashboard-jadwal-kunjungan')->with('success', 'Jadwal berhasil diperbarui.');
     }
 
     /**
@@ -101,21 +94,24 @@ class JadwalKunjunganController extends Controller
      */
     public function destroy(JadwalKunjungan $jadwalKunjungan): RedirectResponse
     {
-        $this->authorize('delete', $jadwalKunjungan);
+        abort_if(auth()->user()->cannot('delete', $jadwalKunjungan), 403);
 
         $jadwalKunjungan->delete();
 
-        return redirect()
-            ->route('dashboard-jadwal-kunjungan')
-            ->with('success', 'Jadwal berhasil dihapus.');
+        return redirect()->route('dashboard-jadwal-kunjungan')->with('success', 'Jadwal berhasil dihapus.');
     }
 
     /**
      * Periksa apakah jadwal bentrok dengan jadwal lain.
+     *
+     * @param  array  $validatedData  Data jadwal yang divalidasi
+     * @param  int|null  $excludedId  ID jadwal yang dikecualikan saat update
+     * @return bool  True jika bentrok, false jika tidak
      */
     private function cekJadwalBentrok(array $validatedData, ?int $excludedId = null): bool
     {
-        $query = JadwalKunjungan::where('tgl_kunjungan', $validatedData['tgl_kunjungan'])
+        $query = JadwalKunjungan::query()
+            ->where('tgl_kunjungan', $validatedData['tgl_kunjungan'])
             ->where(function ($q) use ($validatedData) {
                 $q->whereRaw('? BETWEEN jam_mulai AND jam_selesai', [$validatedData['jam_mulai']])
                     ->orWhereRaw('? BETWEEN jam_mulai AND jam_selesai', [$validatedData['jam_selesai']])
