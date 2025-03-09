@@ -1,0 +1,17 @@
+name: Laravel Linting
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - name: Install Dependencies
+        run: composer install --prefer-dist --no-progress
+      - name: Run Laravel Pint
+        run: vendor/bin/pint --test
