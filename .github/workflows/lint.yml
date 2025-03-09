@@ -1,17 +1,48 @@
-name: Laravel Linting
+name: Laravel Code Linting (Windows)
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   lint:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: "8.4"
+          extensions: fileinfo, xdebug
+
       - name: Install Dependencies
-        run: composer install --prefer-dist --no-progress
+        run: composer install --no-progress --prefer-dist
+
+      - name: Check PHP Installation
+        run: where.exe php
+
+      - name: Ensure CodeSniffer & Pint are Installed
+        run: composer require --dev squizlabs/php_codesniffer laravel/pint:^1.10
+
+      - name: Run PHP Linter
+        run: |
+          Get-ChildItem -Path app, routes, database -Recurse -Filter "*.php" | ForEach-Object { php -l $_.FullName }
+        shell: pwsh
+
+      - name: Validate PHP CodeSniffer Installation
+        run: php vendor/bin/phpcs --version || echo "PHP CodeSniffer is not installed!"
+
+      - name: Run PHP CodeSniffer
+        run: php vendor/bin/phpcs --standard=PSR12 app/
+
+      - name: Validate Laravel Pint Installation
+        run: php vendor/bin/pint --version || echo "Laravel Pint is not installed!"
+
       - name: Run Laravel Pint
-        run: vendor/bin/pint --test
+        run: php vendor/bin/pint --test
