@@ -1,4 +1,4 @@
-name: Laravel Code Linting (Windows)
+name: Laravel CI (Windows)
 
 on:
   push:
@@ -33,5 +33,33 @@ jobs:
       - name: Validate PHP CodeSniffer Installation
         run: php vendor/bin/phpcs --version || echo "PHP CodeSniffer is not installed!"
 
-      - name: Run PHP CodeSniffer
+      - name: Run PHP CodeSniffer (Linting)
         run: php vendor/bin/phpcs --standard=PSR12 app/
+
+  test:
+    runs-on: windows-latest
+    needs: lint # Test hanya berjalan jika linting sukses
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: fileinfo, xdebug
+
+      - name: Install Dependencies
+        run: composer install --no-progress --prefer-dist
+
+      - name: Copy .env Example
+        run: cp .env.example .env
+
+      - name: Generate Application Key
+        run: php artisan key:generate
+
+      - name: Run Database Migrations
+        run: php artisan migrate --force
+
+      - name: Run Tests (PHPUnit)
+        run: php artisan test
