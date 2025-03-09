@@ -26,7 +26,11 @@ class JadwalKunjunganController extends Controller
             ->latest()
             ->get();
 
-        return view('dashboard.manajemen-kegiatan.jadwal-kunjungan.index', compact('jadwalKunjungan', 'kunjunganPetugas'));
+            return view('dashboard.manajemen-kegiatan.jadwal-kunjungan.index', [
+                'jadwalKunjungan' => $jadwalKunjungan,
+                'kunjunganPetugas' => $kunjunganPetugas
+            ]);
+            
     }
 
     /**

@@ -26,7 +26,7 @@ class KoleksiController extends Controller
     public function create()
     {
         // Ambil koleksi yang ingin ditambahkan ukurannya
-        $koleksi = new Koleksi; // Ganti dengan cara Anda mengambil data koleksi yang sesuai
+        $koleksi = new Koleksi(); // Ganti dengan cara Anda mengambil data koleksi yang sesuai
 
         // Ambil data ukuran dari koleksi jika sudah ada
         $ukuran = $koleksi->ukuran ?? [];

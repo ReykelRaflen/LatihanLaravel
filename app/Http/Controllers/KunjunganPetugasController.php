@@ -65,7 +65,7 @@ class KunjunganPetugasController extends Controller
         ]);
 
         foreach ($request->pegawai_id as $pegawaiId) {
-            $model = new KunjunganPetugas;
+            $model = new KunjunganPetugas();
             $model->jadwal_kunjungan_id = $validatedData['jadwal_kunjungan_id'];
             $model->pegawai_id = $pegawaiId;
             $model->save();
