@@ -6,13 +6,15 @@ use App\Http\Requests\JadwalKunjunganRequest;
 use App\Models\JadwalKunjungan;
 use App\Models\KunjunganPetugas;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class JadwalKunjunganController extends Controller
 {
     /**
      * Tampilkan daftar jadwal kunjungan.
      */
-    public function index()
+    public function index(): View
     {
         $sekolahUsers = User::where('role', 'sekolah')->pluck('id');
 
@@ -33,7 +35,7 @@ class JadwalKunjunganController extends Controller
     /**
      * Tampilkan form tambah jadwal kunjungan.
      */
-    public function create()
+    public function create(): View
     {
         $sekolahUsers = User::where('role', 'sekolah')->get();
 
@@ -43,7 +45,7 @@ class JadwalKunjunganController extends Controller
     /**
      * Simpan jadwal kunjungan ke database.
      */
-    public function store(JadwalKunjunganRequest $request)
+    public function store(JadwalKunjunganRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
 
@@ -64,7 +66,7 @@ class JadwalKunjunganController extends Controller
     /**
      * Tampilkan form edit jadwal kunjungan.
      */
-    public function edit(JadwalKunjungan $jadwalKunjungan)
+    public function edit(JadwalKunjungan $jadwalKunjungan): View
     {
         $this->authorize('update', $jadwalKunjungan);
 
@@ -74,7 +76,7 @@ class JadwalKunjunganController extends Controller
     /**
      * Perbarui jadwal kunjungan di database.
      */
-    public function update(JadwalKunjunganRequest $request, JadwalKunjungan $jadwalKunjungan)
+    public function update(JadwalKunjunganRequest $request, JadwalKunjungan $jadwalKunjungan): RedirectResponse
     {
         $this->authorize('update', $jadwalKunjungan);
 
@@ -97,7 +99,7 @@ class JadwalKunjunganController extends Controller
     /**
      * Hapus jadwal kunjungan dari database.
      */
-    public function destroy(JadwalKunjungan $jadwalKunjungan)
+    public function destroy(JadwalKunjungan $jadwalKunjungan): RedirectResponse
     {
         $this->authorize('delete', $jadwalKunjungan);
 
@@ -111,7 +113,7 @@ class JadwalKunjunganController extends Controller
     /**
      * Periksa apakah jadwal bentrok dengan jadwal lain.
      */
-    private function cekJadwalBentrok($validatedData, $excludedId = null)
+    private function cekJadwalBentrok(array $validatedData, ?int $excludedId = null): bool
     {
         $query = JadwalKunjungan::where('tgl_kunjungan', $validatedData['tgl_kunjungan'])
             ->where(function ($q) use ($validatedData) {
