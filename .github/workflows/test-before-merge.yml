@@ -2,12 +2,14 @@ name: PHP Lint
 
 on:
   pull_request:
+    branches:
+      - main
     paths:
       - '**/*.php'
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -24,4 +26,4 @@ jobs:
 
       - name: Run PHP_CodeSniffer
         run: |
-          ./vendor/bin/phpcs --standard=PSR12 --extensions=php
+          .\vendor\bin\phpcs --standard=PSR12 --extensions=php
