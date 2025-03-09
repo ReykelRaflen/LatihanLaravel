@@ -24,21 +24,15 @@ jobs:
       - name: Install Dependencies
         run: composer install --no-progress --prefer-dist
 
-      - name: Check PHP Installation
-        run: where.exe php
-
       - name: Ensure CodeSniffer is Installed
         run: composer require --dev squizlabs/php_codesniffer
-
-      - name: Validate PHP CodeSniffer Installation
-        run: php vendor/bin/phpcs --version || echo "PHP CodeSniffer is not installed!"
 
       - name: Run PHP CodeSniffer (Linting)
         run: php vendor/bin/phpcs --standard=PSR12 app/
 
   test:
     runs-on: windows-latest
-    needs: lint # Test hanya berjalan jika linting sukses
+    needs: lint # Hanya menjalankan test jika linting berhasil
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -47,7 +41,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.4"
-          extensions: fileinfo, xdebug
+          extensions: fileinfo, xdebug, sqlite3 # Menggunakan SQLite untuk test
 
       - name: Install Dependencies
         run: composer install --no-progress --prefer-dist
@@ -58,5 +52,10 @@ jobs:
       - name: Generate Application Key
         run: php artisan key:generate
 
+      - name: Set Up SQLite (Tanpa Migrate)
+        run: |
+          echo "DB_CONNECTION=sqlite" > .env
+          echo "DB_DATABASE=:memory:" >> .env
+
       - name: Run Tests (PHPUnit)
-        run: php artisan test
+        run: php artisan test --without-migrations
