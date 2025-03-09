@@ -30,7 +30,6 @@ class JadwalKunjunganController extends Controller
                 'jadwalKunjungan' => $jadwalKunjungan,
                 'kunjunganPetugas' => $kunjunganPetugas
             ]);
-            
     }
 
     /**
