@@ -4,9 +4,6 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - '**/*.php'
-
 jobs:
   lint:
     runs-on: windows-latest
