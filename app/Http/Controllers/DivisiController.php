@@ -75,7 +75,7 @@ class DivisiController extends Controller
         $divisi = Divisi::findOrFail($id);
 
         $request->validate([
-            'nama_divisi' => 'required|unique:divisis,nama_divisi,' . $id,
+            'nama_divisi' => 'required|unique:divisis,nama_divisi,'.$id,
         ], [
             'nama_divisi.unique' => 'Divisi Sudah Ada, Silahkan Ganti Divisi Lain',
         ]);

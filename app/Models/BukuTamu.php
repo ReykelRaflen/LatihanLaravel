@@ -22,7 +22,7 @@ class BukuTamu extends Model
      */
     public static function getAllBukuTamuByCreatedAt()
     {
-        return BukuTamu::select(DB::raw("DATE(created_at) as created_date"), DB::raw('count(*) as count'))
+        return BukuTamu::select(DB::raw('DATE(created_at) as created_date'), DB::raw('count(*) as count'))
             ->groupBy('created_date')
             ->orderBy('created_date', 'desc')
             ->get()
@@ -40,7 +40,7 @@ class BukuTamu extends Model
      */
     public static function getAllBukuTamuGrafik($interval = 'today', $value = null)
     {
-        $query = BukuTamu::select(DB::raw("DATE(created_at) as created_date"), DB::raw('count(*) as count'));
+        $query = BukuTamu::select(DB::raw('DATE(created_at) as created_date'), DB::raw('count(*) as count'));
 
         switch ($interval) {
             case 'year':
@@ -49,7 +49,7 @@ class BukuTamu extends Model
 
             case 'month':
                 $query->whereYear('created_at', date('Y', strtotime($value ?? now())))
-                      ->whereMonth('created_at', date('m', strtotime($value ?? now())));
+                    ->whereMonth('created_at', date('m', strtotime($value ?? now())));
                 break;
 
             case 'week':

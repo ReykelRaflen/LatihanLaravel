@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\JadwalKunjunganRequest;
 use App\Models\JadwalKunjungan;
 use App\Models\KunjunganPetugas;
 use App\Models\User;
-use Illuminate\Http\Request;
-use App\Http\Requests\JadwalKunjunganRequest;
 
 class JadwalKunjunganController extends Controller
 {

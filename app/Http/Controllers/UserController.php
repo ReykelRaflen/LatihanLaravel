@@ -77,8 +77,8 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $request->validate([
             'name' => 'required',
-            'username' => 'required|unique:users,username,' . $id,
-            'email' => 'nullable|email|unique:users,email,' . $id,
+            'username' => 'required|unique:users,username,'.$id,
+            'email' => 'nullable|email|unique:users,email,'.$id,
             'password' => 'nullable|min:6',
         ], [
             'username.unique' => 'Username sudah digunakan. Silakan gunakan username lain.',
