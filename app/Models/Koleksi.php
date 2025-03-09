@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Koleksi extends Model
 {
     use HasFactory;
+
     protected $table = 'koleksis';
+
     protected $fillable = [
         'no_koleksi',
         'nama_koleksi',

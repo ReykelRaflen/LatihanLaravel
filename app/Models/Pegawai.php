@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Pegawai extends Model
 {
     use HasFactory;
+
     protected $table = 'pegawais'; // Nama tabel di database
+
     protected $fillable = [
         'nama_pegawai',
         'tgl_lahir',
@@ -17,7 +19,7 @@ class Pegawai extends Model
         'divisi',
         'no_tlp',
         'pesan',
-        'alamat'
+        'alamat',
     ]; // Kolom yang dapat diisi
 
     // Relasi pegawai ke divisi
@@ -25,7 +27,7 @@ class Pegawai extends Model
     // {
     //     return $this->belongsTo(Divisi::class, 'divisi_id', 'id');
     // }
-    
+
     public function kunjunganPetugas()
     {
         return $this->hasMany(KunjunganPetugas::class);

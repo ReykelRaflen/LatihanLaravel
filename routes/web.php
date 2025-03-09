@@ -12,8 +12,6 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\UserController;
-use App\Models\HistoriKunjungan;
-use App\Models\KunjunganPetugas;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,15 +25,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//login
-
+// login
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('isLogin');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-
-//frontend
+// frontend
 Route::get('/', [FrontendController::class, 'index']);
 Route::get('/profile', [FrontendController::class, 'profile']);
 Route::get('/visi-misi', [FrontendController::class, 'visiMisi']);
@@ -46,16 +42,14 @@ Route::get('/bukutamu', [FrontendController::class, 'bukutamu']);
 Route::post('/bukutamu', [FrontendController::class, 'store']);
 Route::get('/koleksi/{id}', [FrontendController::class, 'showKoleksiDetail'])->name('koleksi.detail');
 
-//dashboard
+// dashboard
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index']);
     Route::get('/dashboard-profile', [App\Http\Controllers\DashboardController::class, 'profileMuseum']);
     Route::get('/dashboard/filter-kunjungan', [App\Http\Controllers\DashboardController::class, 'filterKunjungan'])->name('filter-kunjungan');
 
-
-
-    //manajemen pengguna    
-    //pengguna
+    // manajemen pengguna
+    // pengguna
     Route::get('/dashboard-pengguna', [UserController::class, 'index']);
     Route::get('/dashboard-pengguna/create', [UserController::class, 'create']);
     Route::post('/dashboard-pengguna', [UserController::class, 'store']);
@@ -66,7 +60,7 @@ Route::middleware(['auth'])->group(function () {
 
     //  Route::resource('/dashboard-pengguna', UserController::class);
 
-    //divisi
+    // divisi
     Route::get('/dashboard-divisi', [DivisiController::class, 'index']);
     Route::get('/dashboard-divisi/create', [DivisiController::class, 'create']);
     Route::post('/dashboard-divisi/', [DivisiController::class, 'store']);
@@ -74,7 +68,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard-divisi/{id}/edit', [DivisiController::class, 'edit'])->name('divisi.edit');
     Route::put('/dashboard-divisi/{id}', [DivisiController::class, 'update'])->name('divisi.update');
 
-    //pegawai
+    // pegawai
     Route::get('/dashboard-pegawai', [PegawaiController::class, 'index']);
     Route::get('/dashboard-pegawai/create', [PegawaiController::class, 'create']);
     Route::post('/dashboard-pegawai', [PegawaiController::class, 'store']);
@@ -83,8 +77,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard-pegawai/{id}/edit', [PegawaiController::class, 'edit']);
     Route::put('/dashboard-pegawai/{id}', [PegawaiController::class, 'update'])->name('pegawai.update');
 
-
-    //inventaris koleksi
+    // inventaris koleksi
     Route::get('/dashboard-koleksi', [KoleksiController::class, 'index']);
     Route::get('/dashboard-koleksi/create', [KoleksiController::class, 'create']);
     Route::post('/dashboard-koleksi', [KoleksiController::class, 'store']);
@@ -92,19 +85,18 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/dashboard-koleksi/{id}', [KoleksiController::class, 'update']); // Tambahkan route update
     Route::delete('/dashboard-koleksi/{id}', [KoleksiController::class, 'destroy']); // Tambahkan route destroy
 
-    //jadwal-kunjungan
+    // jadwal-kunjungan
     Route::get('/dashboard-jadwal-kunjungan', [JadwalKunjunganController::class, 'index']);
     Route::get('/dashboard-jadwal-kunjungan/create', [JadwalKunjunganController::class, 'create']);
     Route::post('/dashboard-jadwal-kunjungan', [JadwalKunjunganController::class, 'store']);
     Route::get('/dashboard-jadwal-kunjungan/{id}/edit', [JadwalKunjunganController::class, 'edit']);
     Route::put('/dashboard-jadwal-kunjungan/{id}', [JadwalKunjunganController::class, 'update']);
 
-
-    //histori-kunjungan
+    // histori-kunjungan
     Route::get('/dashboard-histori-kunjungan', [HistoriKunjunganController::class, 'index']);
     Route::post('/histori/{id}', [HistoriKunjunganController::class, 'store']);
 
-    //kunjungan-petugas
+    // kunjungan-petugas
     Route::get('/dashboard-kunjungan-petugas/create', [KunjunganPetugasController::class, 'create']);
     Route::post('/dashboard-kunjungan-petugas', [KunjunganPetugasController::class, 'store']);
     Route::post('/dashboard-kunjungan-petugas/{id}/success', [KunjunganPetugasController::class, 'updateStatusSuccess'])->name('kunjungan-petugas.success');
@@ -115,8 +107,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard-feedback', [FeedbackController::class, 'index']);
     Route::resource('/dashboard-feedback', FeedbackController::class);
 });
-
-
 
 // //museum-masuk-sekolah
 // Route::resource('/dashboard/daftar-sekolah', SekolahController::class);

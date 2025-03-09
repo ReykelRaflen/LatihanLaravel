@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class KunjunganPetugas extends Model
 {
     use HasFactory;
-    protected $guarded=[];
+
+    protected $guarded = [];
 
     public function jadwalKunjungan()
     {
@@ -19,5 +20,4 @@ class KunjunganPetugas extends Model
     {
         return $this->belongsTo(Pegawai::class, 'pegawai_id');
     }
-
 }

@@ -14,8 +14,9 @@ class KoleksiController extends Controller
     public function index()
     {
         $koleksis = Koleksi::all();
+
         return view('dashboard.manajemen-museum.koleksi.index', [
-            'koleksi' => $koleksis
+            'koleksi' => $koleksis,
         ]);
     }
 
@@ -31,7 +32,7 @@ class KoleksiController extends Controller
         $ukuran = $koleksi->ukuran ?? [];
 
         return view('dashboard.manajemen-museum.koleksi.create', [
-            'ukuran' => $ukuran
+            'ukuran' => $ukuran,
         ]);
     }
 
@@ -54,10 +55,9 @@ class KoleksiController extends Controller
             'asal' => 'required',
             'keadaan' => 'required',
             'gambar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        ],[
-            'no_koleksi' => 'Nomor koleksi sudah ada, gunakan nomor koleksi yang lain.'
+        ], [
+            'no_koleksi' => 'Nomor koleksi sudah ada, gunakan nomor koleksi yang lain.',
         ]);
-
 
         // Buat instance Koleksi dan isi atributnya
         $koleksi = new Koleksi([
@@ -71,8 +71,6 @@ class KoleksiController extends Controller
 
         ]);
 
-
-
         // Proses unggah dan simpan foto jika ada
         if ($request->hasFile('gambar')) {
             $avatar = $request->file('gambar');
@@ -81,11 +79,10 @@ class KoleksiController extends Controller
             $koleksi->gambar = $koleksiPath;
             $koleksi->save();
         }
+
         // Redirect dengan pesan sukses
         return redirect('/dashboard-koleksi')->with('success', 'Koleksi berhasil ditambahkan.');
     }
-
-
 
     /**
      * Display the specified resource.
@@ -101,8 +98,9 @@ class KoleksiController extends Controller
     public function edit($id)
     {
         $koleksi = Koleksi::findOrFail($id);
+
         return view('dashboard.manajemen-museum.koleksi.edit', [
-            'koleksi' => $koleksi
+            'koleksi' => $koleksi,
         ]);
     }
 
@@ -163,6 +161,7 @@ class KoleksiController extends Controller
         }
 
         $koleksi->delete();
+
         // Redirect dengan pesan sukses
         return redirect('/dashboard-koleksi')->with('success', 'Koleksi berhasil dihapus.');
     }

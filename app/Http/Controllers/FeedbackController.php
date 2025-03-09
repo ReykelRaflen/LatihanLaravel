@@ -8,19 +8,18 @@ use Illuminate\Http\Request;
 class FeedbackController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Tampilkan daftar feedback milik pengguna yang sedang masuk.
      */
     public function index()
     {
-        $user = auth()->user(); // Mengambil informasi pengguna yang sedang masuk
-        $feedback = Feedback::where('user_id', $user->id)->get(); // Mengambil umpan balik yang dibuat oleh pengguna tersebut
-        return view('dashboard.feedback', [
-            'feedback' => $feedback,
-        ]);
+        $user = auth()->user();
+        $feedback = Feedback::where('user_id', $user->id)->latest()->get(); // Urutkan dari yang terbaru
+
+        return view('dashboard.feedback', compact('feedback'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Tampilkan form untuk membuat feedback baru.
      */
     public function create()
     {
@@ -28,50 +27,75 @@ class FeedbackController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Simpan feedback yang baru dibuat ke database.
      */
     public function store(Request $request)
     {
-        $user = auth()->user(); // Mengambil informasi pengguna yang sedang masuk
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5', // Validasi rating (1-5)
+            'kesan' => 'required|string|max:500', // Maksimal 500 karakter
+        ]);
 
-        $feedback = new Feedback();
-        $feedback->user_id = $user->id; // Menghubungkan umpan balik dengan ID pengguna yang membuatnya
-        $feedback->rating = $request->input('rating');
-        $feedback->kesan = $request->input('kesan');
-        $feedback->save();
+        $user = auth()->user();
+
+        Feedback::create([
+            'user_id' => $user->id,
+            'rating' => $request->rating,
+            'kesan' => $request->kesan,
+        ]);
 
         return redirect('/dashboard-feedback')->with('success', 'Feedback berhasil disimpan.');
     }
 
     /**
-     * Display the specified resource.
+     * Tampilkan detail feedback tertentu.
      */
     public function show(Feedback $feedback)
     {
-        //
+        $this->authorize('view', $feedback); // Pastikan hanya pemilik yang bisa melihat
+
+        return view('dashboard.feedback-show', compact('feedback'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Tampilkan form edit feedback.
      */
     public function edit(Feedback $feedback)
     {
-        //
+        $this->authorize('update', $feedback); // Pastikan hanya pemilik yang bisa mengedit
+
+        return view('dashboard.feedback-edit', compact('feedback'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Perbarui feedback di database.
      */
     public function update(Request $request, Feedback $feedback)
     {
-        //
+        $this->authorize('update', $feedback);
+
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'kesan' => 'required|string|max:500',
+        ]);
+
+        $feedback->update([
+            'rating' => $request->rating,
+            'kesan' => $request->kesan,
+        ]);
+
+        return redirect('/dashboard-feedback')->with('success', 'Feedback berhasil diperbarui.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Hapus feedback dari database.
      */
     public function destroy(Feedback $feedback)
     {
-        //
+        $this->authorize('delete', $feedback);
+
+        $feedback->delete();
+
+        return redirect('/dashboard-feedback')->with('success', 'Feedback berhasil dihapus.');
     }
 }

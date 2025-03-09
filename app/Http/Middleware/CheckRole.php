@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {
@@ -17,7 +16,7 @@ class CheckRole
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return redirect('/login');
         }
 

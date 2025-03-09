@@ -25,13 +25,12 @@ class AuthController extends Controller
     }
 
     public function logout(Request $request)
-{
-    Auth::guard('web')->logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
+    {
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-    // Redirect to a desired location after logout
-    return redirect('/login');
-}
-
+        // Redirect to a desired location after logout
+        return redirect('/login');
+    }
 }

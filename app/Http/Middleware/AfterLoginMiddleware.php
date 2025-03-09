@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class AfterLoginMiddleware
 {
@@ -24,6 +23,7 @@ class AfterLoginMiddleware
                 if (session('error')) {
                     session()->forget('error'); // Hapus session error jika ada
                 }
+
                 return redirect('/dashboard');
             }
         }

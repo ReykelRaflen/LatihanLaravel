@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Divisi extends Model
 {
     use HasFactory;
+
     protected $table = 'divisis'; // Nama tabel di database
+
     protected $fillable = ['nama_divisi']; // Kolom yang dapat diisi
 
     // Relasi pegawai ke divisi (jika ada)

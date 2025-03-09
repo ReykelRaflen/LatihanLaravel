@@ -24,9 +24,10 @@ class LaporanController extends Controller
         $bukutamu = $query->get();
 
         $tamu = BukuTamu::all();
+
         return view('dashboard.laporan.buku-tamu', [
             'bukutamu' => $tamu,
-            'bukutamu' => $bukutamu
+            'bukutamu' => $bukutamu,
         ]);
     }
 
@@ -45,9 +46,10 @@ class LaporanController extends Controller
         $kunjungan = $query->get();
 
         $historiKunjungan = HistoriKunjungan::all();
+
         return view('dashboard.laporan.kunjungan', [
             'kunjungan' => $kunjungan,
-            'historiKunjungan' => $historiKunjungan
+            'historiKunjungan' => $historiKunjungan,
         ]);
     }
 }

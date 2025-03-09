@@ -13,7 +13,7 @@ class HistoriKunjunganController extends Controller
      */
     public function index()
     {
-      $historiKunjungan = HistoriKunjungan::all(); // Atau sesuaikan dengan query yang Anda butuhkan
+        $historiKunjungan = HistoriKunjungan::all(); // Atau sesuaikan dengan query yang Anda butuhkan
 
         return view('dashboard.manajemen-kegiatan.histori-kunjungan.index', [
             'historiKunjungan' => $historiKunjungan,
@@ -41,16 +41,17 @@ class HistoriKunjunganController extends Controller
 
         return response()->json(['message' => 'Histori kunjungan berhasil dibuat'], 200);
     }
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request, $id)
     {
-        
+
         $kunjungan_petugas_id = KunjunganPetugas::find($id);
         // dd($kunjungan_id);
         HistoriKunjungan::create([
-            'kunjungan_petugas_id'=> $kunjungan_petugas_id
+            'kunjungan_petugas_id' => $kunjungan_petugas_id,
         ]);
 
         return view('dasbaord.index');

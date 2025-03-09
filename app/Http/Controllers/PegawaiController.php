@@ -15,8 +15,9 @@ class PegawaiController extends Controller
     public function index()
     {
         $pegawai = Pegawai::all();
+
         return view('dashboard.manajemen-pengguna.pegawai.index', [
-            'pegawais' => $pegawai
+            'pegawais' => $pegawai,
         ]);
     }
 
@@ -28,7 +29,6 @@ class PegawaiController extends Controller
         // $divisis = Divisi::all(); // Mengambil semua data divisi
         return view('dashboard.manajemen-pengguna.pegawai.create');
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -71,17 +71,15 @@ class PegawaiController extends Controller
         return redirect('/dashboard-pegawai')->with('success', 'Pegawai berhasil ditambahkan');
     }
 
-
-
     /**
      * Display the specified resource.
      */
     public function show($id)
     {
         $pegawai = Pegawai::findOrFail($id);
+
         return view('dashboard.manajemen-pengguna.pegawai.detail', compact('pegawai'));
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -96,7 +94,6 @@ class PegawaiController extends Controller
             // 'divisis' => $divisis
         ]);
     }
-
 
     /**
      * Update the specified resource in storage.

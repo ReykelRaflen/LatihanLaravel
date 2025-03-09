@@ -13,8 +13,9 @@ class DivisiController extends Controller
     public function index()
     {
         $divisi = Divisi::all();
-        return view('dashboard.manajemen-pengguna.divisi.index',[
-            'divisis'=> $divisi
+
+        return view('dashboard.manajemen-pengguna.divisi.index', [
+            'divisis' => $divisi,
         ]);
     }
 
@@ -32,20 +33,19 @@ class DivisiController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'nama_divisi' => 'required|unique:divisis,nama_divisi',
-    ], [
-        'nama_divisi.unique' => 'Divisi sudah ada, silakan tambahkan divisi lain',
-    ]);
+    {
+        $request->validate([
+            'nama_divisi' => 'required|unique:divisis,nama_divisi',
+        ], [
+            'nama_divisi.unique' => 'Divisi sudah ada, silakan tambahkan divisi lain',
+        ]);
 
-    Divisi::create([
-        'nama_divisi' => $request->nama_divisi
-    ]);
+        Divisi::create([
+            'nama_divisi' => $request->nama_divisi,
+        ]);
 
-    return redirect('/dashboard-divisi')->with('success', 'Divisi berhasil ditambahkan');
-}
-
+        return redirect('/dashboard-divisi')->with('success', 'Divisi berhasil ditambahkan');
+    }
 
     /**
      * Display the specified resource.
@@ -61,8 +61,9 @@ class DivisiController extends Controller
     public function edit($id)
     {
         $divisi = Divisi::findOrFail($id);
-        return view('dashboard.manajemen-pengguna.divisi.edit',[
-            'divisis'=> $divisi
+
+        return view('dashboard.manajemen-pengguna.divisi.edit', [
+            'divisis' => $divisi,
         ]);
     }
 
@@ -70,25 +71,24 @@ class DivisiController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
-{
-    $divisi = Divisi::findOrFail($id);
+    {
+        $divisi = Divisi::findOrFail($id);
 
-    $request->validate([
-        'nama_divisi' => 'required|unique:divisis,nama_divisi,' . $id,
-    ], [
-        'nama_divisi.unique' => 'Divisi Sudah Ada, Silahkan Ganti Divisi Lain',
-    ]);
+        $request->validate([
+            'nama_divisi' => 'required|unique:divisis,nama_divisi,' . $id,
+        ], [
+            'nama_divisi.unique' => 'Divisi Sudah Ada, Silahkan Ganti Divisi Lain',
+        ]);
 
-    $divisi->nama_divisi = $request->nama_divisi;
+        $divisi->nama_divisi = $request->nama_divisi;
 
-    // Jika Anda ingin memperbarui atribut lainnya, Anda dapat melakukannya di sini
-    // $divisi->atribut_lain = $request->atribut_lain;
+        // Jika Anda ingin memperbarui atribut lainnya, Anda dapat melakukannya di sini
+        // $divisi->atribut_lain = $request->atribut_lain;
 
-    $divisi->save();
+        $divisi->save();
 
-    return redirect('/dashboard-divisi')->with('success', 'Divisi berhasil diperbaharui!');
-}
-
+        return redirect('/dashboard-divisi')->with('success', 'Divisi berhasil diperbaharui!');
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -100,6 +100,5 @@ class DivisiController extends Controller
         $divisis->delete();
 
         return redirect('/dashboard-divisi')->with('delete', 'Divisi berhasil dihapus.');
-
     }
 }

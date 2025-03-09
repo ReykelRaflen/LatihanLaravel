@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
@@ -26,17 +24,15 @@ class UserController extends Controller
         return view(
             'dashboard.manajemen-pengguna.pengguna.index',
             [
-                'user' => $users
+                'user' => $users,
             ]
         );
     }
-
 
     public function create()
     {
         return view('dashboard.manajemen-pengguna.pengguna.create');
     }
-
 
     public function store(Request $request)
     {
@@ -67,15 +63,14 @@ class UserController extends Controller
         return redirect('/dashboard-pengguna')->with('success', 'Pengguna berhasil ditambahkan!');
     }
 
-
     public function edit($id)
     {
         $users = User::findOrFail($id);
+
         return view('dashboard.manajemen-pengguna.pengguna.edit', [
-            'user' => $users
+            'user' => $users,
         ]);
     }
-
 
     public function update(Request $request, $id)
     {
@@ -101,10 +96,10 @@ class UserController extends Controller
             $user->password = bcrypt($request->password);
             $user->save();
         }
+
         // Perbarui atribut lainnya jika diperlukan
         return redirect('/dashboard-pengguna')->with('success', 'Pengguna berhasil diperbarui!');
     }
-
 
     public function destroy($id)
     {
